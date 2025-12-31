@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task Manager</title>
+</head>
+<body>
+  <h2>Student Task Manager</h2>
+
+  <input id="task" placeholder="Enter task" />
+  <button onclick="addTask()">Add Task</button>
+
+  <ul id="taskList"></ul>
+
+  <script>
+    function addTask() {
+      const task = document.getElementById("task").value;
+      fetch("/add-task", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task })
+      }).then(loadTasks);
+    }
+
+    function loadTasks() {
+      fetch("/tasks")
+        .then(res => res.json())
+        .then(data => {
+          const list = document.getElementById("taskList");
+          list.innerHTML = "";
+          data.forEach(t => {
+            const li = document.createElement("li");
+            li.innerText = t.task;
+            list.appendChild(li);
+          });
+        });
+    }
+
+    loadTasks();
+  </script>
+</body>
+</html>
